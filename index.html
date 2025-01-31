@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7DHW30B8C2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7DHW30B8C2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7DHW30B8C2');
+  </script>
 
-  gtag('config', 'G-7DHW30B8C2');
-</script>
-
-  
   <meta charset="UTF-8" />
   <title>World Savior Shooter</title>
   <style>
@@ -36,7 +32,6 @@
     #mainWrapper {
       display: flex;
       background: #000;
-      /* You can optionally set a max-width if desired */
     }
 
     /* Left Panel: scrollable text, start button */
@@ -117,14 +112,13 @@
     <div id="leftPanel">
       <h2>World Savior</h2>
       <p>
-        🌍 WORLD SAVIOR: THE LAST STAND AGAINST THE UNDEAD 🧟‍♂️🔥
-        <br/><br/>
+        🌍 WORLD SAVIOR: THE LAST STAND AGAINST THE UNDEAD 🧟‍♂️🔥<br>
         The world is on the brink of destruction. A relentless horde of zombies has
         descended upon Earth, leaving chaos and ruin in their wake.
       </p>
       <p>
-        🏙️ Cities crumble.<br/>
-        💔 Hope fades.<br/>
+        🏙️ Cities crumble.<br>
+        💔 Hope fades.<br>
         ⚠️ Humanity teeters on the edge of extinction.
       </p>
       <p>
@@ -132,8 +126,6 @@
         a fearless warrior atop his unstoppable tank, blasting through waves of undead
         with ruthless precision. His mission?
       </p>
-      <!-- Add as much text as you want here, it will scroll if it overflows -->
-
       <!-- Start Game Button -->
       <button id="startBtn">Start Game</button>
     </div>
@@ -162,9 +154,19 @@
     const scoreElement = document.getElementById('score');
     const healthBar = document.getElementById('healthBar');
 
+    // Flag to know if we should run game logic or show cover image
     let gameStarted = false;
 
-    // Hero
+    // -------------------------
+    // COVER IMAGE (important!)
+    // -------------------------
+    // This image is drawn if the game has not yet started
+    const coverImage = new Image();
+    coverImage.src = 'assets/world_savior.jpg'; // Make sure this path is correct
+
+    //***********************************************
+    // 2. Hero & Basic Game Data
+    //***********************************************
     const heroWidth = 100;
     const heroHeight = 100;
     let heroX = canvasWidth / 2 - heroWidth / 2;
@@ -184,9 +186,9 @@
     const bulletWidth = 5;
     const bulletHeight = 20;
 
-    // Zombies (with your zombie.jpg image)
+    // Zombies
     const zombieImage = new Image();
-    zombieImage.src = "assets/zombie.jpg"; // Keep your path
+    zombieImage.src = "assets/zombie.jpg"; // Make sure path is correct
     let zombies = [];
     const zombieWidth = 40;
     const zombieHeight = 40;
@@ -197,7 +199,7 @@
     // Score
     let score = 0;
 
-    // Blood
+    // Blood Particles
     let bloodParticles = [];
 
     // Friend
@@ -233,33 +235,32 @@
 
     // Hero image
     const heroImage = new Image();
-    heroImage.src = 'assets/hero.png'; // Keep your path
+    heroImage.src = 'assets/hero.png'; // Make sure path is correct
 
     //***********************************************
-    // 2. Start Game Button
+    // 3. Start Game Button
     //***********************************************
     startBtn.addEventListener('click', () => {
       if (!gameStarted) {
-        // Hide the left panel
+        // Switch the flag to start the game logic
+        gameStarted = true;
+
+        // Hide left panel & show HUD
         leftPanel.style.display = 'none';
-        // Show score & health
         scoreElement.style.display = 'block';
         healthBar.style.display = 'block';
 
-        gameStarted = true;
         // Start BG music
         zombieBackgroundMusic.currentTime = 0;
         zombieBackgroundMusic.play().catch(err => console.log(err));
-
-        requestAnimationFrame(gameLoop);
       }
     });
 
     //***********************************************
-    // 3. Input Listeners
+    // 4. Input Listeners
     //***********************************************
     document.addEventListener('keydown', e => {
-      if (!gameStarted) return;
+      if (!gameStarted) return; // ignore input if game hasn't started
       switch (e.key) {
         case 'ArrowLeft':  moveLeft = true;  break;
         case 'ArrowRight': moveRight = true; break;
@@ -268,8 +269,9 @@
         case ' ':          shootBullet();    break;
       }
     });
+
     document.addEventListener('keyup', e => {
-      if (!gameStarted) return;
+      if (!gameStarted) return; // ignore input if game hasn't started
       switch (e.key) {
         case 'ArrowLeft':  moveLeft = false;  break;
         case 'ArrowRight': moveRight = false; break;
@@ -279,9 +281,10 @@
     });
 
     //***********************************************
-    // 4. Update Functions
+    // 5. Update Functions
     //***********************************************
     function update(deltaTime) {
+      // If the game hasn't started, skip updating
       if (!gameStarted) return;
 
       updateHeroPosition();
@@ -336,13 +339,14 @@
     }
 
     function increaseDifficulty() {
+      // Increase speed every 10 kills
       if (score > 0 && score % 10 === 0) {
         zombieSpeed = 1.2 + (Math.floor(score / 10) * 0.3);
       }
     }
 
     //***********************************************
-    // 5. Collisions
+    // 6. Collisions
     //***********************************************
     function checkBulletZombieCollisions() {
       for (let i = 0; i < zombies.length; i++) {
@@ -388,7 +392,7 @@
     }
 
     //***********************************************
-    // 6. Blood Particles
+    // 7. Blood Particles
     //***********************************************
     function spawnBloodParticles(originX, originY, count=10) {
       for (let i = 0; i < count; i++) {
@@ -421,14 +425,14 @@
     }
 
     //***********************************************
-    // 7. Friend Logic
+    // 8. Friend Logic
     //***********************************************
     function handleFriend() {
-      const now = performance.now();
-      if (!friendActive && now > nextFriendSpawnTime) {
-        // Stop background music
+      if (!friendActive && performance.now() > nextFriendSpawnTime) {
+        // Stop zombie music
         zombieBackgroundMusic.pause();
         zombieBackgroundMusic.currentTime = 0;
+
         // Start friend music
         friendMusic.play().catch(()=>{});
 
@@ -444,6 +448,7 @@
         const dist = Math.sqrt(dx*dx + dy*dy);
 
         if (dist < 10) {
+          // Friend has arrived
           friend.arrived = true;
           heroHealth += 30;
           if (heroHealth > 100) heroHealth = 100;
@@ -467,7 +472,11 @@
           friend.y < zombies[i].y + zombieHeight &&
           friend.y + friend.height > zombies[i].y
         ) {
-          spawnExplosion(zombies[i].x + zombieWidth/2, zombies[i].y + zombieHeight/2);
+          // Explosion on zombie
+          spawnExplosion(
+            zombies[i].x + zombieWidth/2,
+            zombies[i].y + zombieHeight/2
+          );
           zombies.splice(i, 1);
           i--;
         }
@@ -476,6 +485,7 @@
 
     function updateReviveAnimation() {
       if (friendActive && friend.arrived && !reviving) {
+        // End friend event
         friendMusic.pause();
         friendMusic.currentTime = 0;
         zombieBackgroundMusic.play().catch(()=>{});
@@ -485,7 +495,7 @@
     }
 
     //***********************************************
-    // 8. Explosions
+    // 9. Explosions
     //***********************************************
     function spawnExplosion(x, y) {
       explosions.push({
@@ -509,17 +519,29 @@
     }
 
     //***********************************************
-    // 9. Drawing
+    // 10. Drawing
     //***********************************************
     function draw() {
+      // Always clear the canvas each frame
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+      // If the game hasn't started yet, draw cover image
       if (!gameStarted) {
-        // If game not started, do nothing (canvas stays blank)
-        return;
+        if (coverImage.complete) {
+          ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
+        } else {
+          // fallback if cover isn't loaded yet
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        }
+        return; // skip rest of drawing
       }
 
-      // Draw hero
+      // **********************
+      // Once game is started:
+      // **********************
+
+      // Hero
       ctx.drawImage(heroImage, heroX, heroY, heroWidth, heroHeight);
 
       // Bullets
@@ -528,7 +550,7 @@
         ctx.fillRect(b.x, b.y, bulletWidth, bulletHeight);
       });
 
-      // Zombies (use your zombie.jpg image)
+      // Zombies
       zombies.forEach(z => {
         if (zombieImage.complete) {
           ctx.drawImage(zombieImage, z.x, z.y, zombieWidth, zombieHeight);
@@ -539,7 +561,7 @@
         }
       });
 
-      // Blood
+      // Blood Particles
       bloodParticles.forEach(p => {
         ctx.fillStyle = `rgba(255, 0, 0, ${p.alpha})`;
         ctx.fillRect(p.x, p.y, 4, 4);
@@ -593,7 +615,7 @@
     }
 
     //***********************************************
-    // 10. Utility
+    // 11. Utility
     //***********************************************
     function shootBullet() {
       bullets.push({
@@ -611,20 +633,25 @@
     }
 
     //***********************************************
-    // 11. Game Loop
+    // 12. Game Loop
     //***********************************************
     let lastTime = 0;
     function gameLoop(timestamp) {
       const deltaTime = timestamp - lastTime;
       lastTime = timestamp;
 
+      // Update logic (only if gameStarted)
       update(deltaTime);
+
+      // Draw everything (cover or actual game)
       draw();
 
-      // Check game over
-      if (heroHealth <= 0) {
+      // Check game over if the game is running
+      if (gameStarted && heroHealth <= 0) {
         return gameOver();
       }
+
+      // Keep looping
       requestAnimationFrame(gameLoop);
     }
 
@@ -636,7 +663,14 @@
       alert(`Game Over! Your score: ${score}`);
       window.location.reload();
     }
-    // We do NOT call gameLoop() until user presses Start Game
+
+    //***********************************************
+    // 13. Start the Loop Immediately
+    //***********************************************
+    // We do NOT wait for the "Start Game" button
+    // to call gameLoop. This ensures the cover image
+    // is drawn before the user clicks "Start Game".
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
