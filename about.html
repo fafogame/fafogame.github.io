@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us - FAFO Game</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #121212;
+      color: #f0f0f0;
+      line-height: 1.6;
+    }
+    a {
+      color: #1da1f2;
+      text-decoration: none;
+    }
+    h1, h2, h3 {
+      margin: 0 0 20px;
+      text-align: center;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    .navbar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: #1f1f1f;
+        }
+      .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+      }
+
+    /* Hero Section */
+    .hero {
+      background: url('placeholder-hero.jpg') no-repeat center center/cover;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .hero h1 {
+      position: relative;
+      z-index: 2;
+      font-size: 3em;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+    }
+    /* About Section */
+    .about-section {
+      padding: 60px 20px;
+      background-color: #1f1f1f;
+      border-top: 3px solid #e91e63;
+    }
+    .about-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .about-text, .about-image {
+      flex: 1 1 45%;
+      min-width: 300px;
+      padding: 20px;
+    }
+    .about-image img {
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid #e91e63;
+    }
+    /* Mission Section */
+    .mission-section {
+      padding: 60px 20px;
+      background: #121212;
+      border-top: 3px solid #1da1f2;
+    }
+    .mission-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    /* Who We Are Section */
+    .who-section {
+      padding: 60px 20px;
+      background: #1f1f1f;
+      border-top: 3px solid #4caf50;
+    }
+    .who-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    /* Social Media Banner */
+    .social-banner {
+      padding: 40px 20px;
+      background: #121212;
+      border-top: 3px solid #ff9800;
+    }
+    .social-banner h2 {
+      margin-bottom: 20px;
+    }
+
+    .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    }
+
+    .social-icon {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    }
+
+    .social-icon img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    }
+
+    .social-icon:hover {
+    transform: scale(1.1);
+    }
+
+    /* Connect Section */
+    .connect-section {
+      padding: 40px 20px;
+      background: #1f1f1f;
+      text-align: center;
+    }
+    .connect-section a {
+      background: #e91e63;
+      color: #fff;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .connect-section a:hover {
+      background: #d81b60;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .about-content {
+        flex-direction: column;
+      }
+      .about-text, .about-image {
+        flex: 1 1 100%;
+        text-align: center;
+      }
+      .about-image {
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#games">Games</a>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to FAFO Game</h1>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about-section container">
+    <div class="about-content">
+      <div class="about-text">
+        <h2>About Us</h2>
+        <p>
+          We are a passionate team of blockchain enthusiasts, gaming aficionados, and AI developers. Our vision is to merge the innovative world of Web3 gaming with dynamic current narratives in politics, economics, and the ever-evolving FAFO story.
+        </p>
+      </div>
+      <div class="about-image">
+        <!-- Placeholder for company image -->
+        <img src="assets/aboutus.jpg" alt="About FAFO Game">
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="mission-section container">
+    <div class="mission-content">
+      <h2>Our Mission</h2>
+      <p>
+        Our mission is to craft engaging Web3 games that not only entertain but also integrate with current political and economic landscapes. We’re here to promote the FAFO narrative and create immersive experiences that resonate with our community.
+      </p>
+    </div>
+  </section>
+
+  <!-- Who We Are Section -->
+  <section class="who-section container">
+    <div class="who-content">
+      <h2>Who We Are</h2>
+      <p>
+        We are blockchain enthusiasts, gaming experts, and AI developers driven by a shared passion for innovation, creativity, and community. At FAFO Game, we’re all about having fun while building a narrative that unites and empowers our community.
+      </p>
+    </div>
+  </section>
+
+  <!-- Social Media Banner -->
+  <section class="social-banner container">
+    <h2>Connect With Us</h2>
+    <div class="social-icons">
+      <!-- Twitter Icon -->
+      <a href="https://twitter.com/your-twitter-link" target="_blank" class="social-icon">
+        <img src="assets/icons/X_logo.jpg" alt="Twitter Icon" style="width:40px; height:40px;">
+      </a>
+      <!-- Dexscreener Icon -->
+      <a href="https://dexscreener.com/your-link" target="_blank" class="social-icon">
+        <img src="assets/icons/dexscreener.png" alt="Dexscreener Icon" style="width:40px; height:40px;">
+      </a>
+      <!-- Dextools Icon -->
+      <a href="https://dextools.com/your-link" target="_blank" class="social-icon">
+        <img src="assets/icons/dextools.png" alt="Dextools Icon" style="width:40px; height:40px;">
+      </a>
+    </div>
+  </section>
+
+
+  <!-- Connect Section -->
+  <section class="connect-section container">
+    <h2>Join Our Community</h2>
+    <p>If you’d like to be a part of our journey, connect with us.</p>
+    <a href="mailto:fafo.game.2025@gmail.com">fafo.game.2025@gmail.com</a>
+  </section>
+
+</body>
+</html>
