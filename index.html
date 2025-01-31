@@ -1,707 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7DHW30B8C2"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-7DHW30B8C2');
-  </script>
 
-  <meta charset="UTF-8" />
-  <title>World Savior Shooter</title>
-  <style>
-    /* Basic reset and full-page dark background */
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000; /* black background */
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column; /* so banner can sit on top */
-      align-items: center;
-    }
+     <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7DHW30B8C2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-7DHW30B8C2');
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAFO Game - Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: #1f1f1f;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+        }
 
-    /* Banner at the top */
-    #banner {
-      width: 100%;
-      background: #444;
-      color: #fff;
-      text-align: center;
-      padding: 10px 0;
-      margin-bottom: 10px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
 
-    /* A main wrapper that holds 2 columns:
-       - Left: Text Panel
-       - Right: 800×600 Game
-    */
-    #mainWrapper {
-      display: flex;
-      background: #000;
-      max-width: 1200px; /* For some horizontal limit */
-      margin: 0 auto;
-    }
+        /* Hero Section */
+        .hero {
+        background: url('placeholder-hero.jpg') no-repeat center center/cover;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        }
+        .hero::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        }
+        .hero h1 {
+        position: relative;
+        z-index: 2;
+        font-size: 3em;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+        }
 
-    /* Left Panel: scrollable text, start button */
-    #leftPanel {
-      width: 350px;         /* Adjust as desired */
-      height: 600px;        /* Match game canvas height */
-      background: #222;
-      color: #fff;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;      /* scroll if text is long */
-    }
-    #leftPanel h2 {
-      margin-top: 0;
-      text-transform: uppercase;
-    }
-    #leftPanel p {
-      line-height: 1.4em;
-      margin-bottom: 1em;
-    }
-    #startBtn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      background: #555;
-      border: none;
-      color: #fff;
-      border-radius: 5px;
-    }
+        .banner {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .games-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
 
-    /* Right Column: the game container (800×600) */
-    #gameContainer {
-      width: 800px;
-      height: 600px;
-      position: relative; /* so we can position scoreboard, etc. */
-      margin-left: 10px;  /* small gap between columns */
-      background: #111;
-      border: 2px solid #444;
-    }
-
-    /* The 800×600 canvas inside #gameContainer */
-    #gameCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      background: #111;
-    }
-
-    /* Score & Health (hidden until game starts) */
-    #score, #healthBar {
-      display: none; /* hidden until the user presses Start Game */
-      position: absolute;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      user-select: none;
-      z-index: 10;
-    }
-    #score {
-      top: 10px;
-      left: 10px;
-      font-size: 20px;
-    }
-    #healthBar {
-      top: 40px;
-      left: 10px;
-      font-size: 18px;
-    }
-
-    /* Footer text for the FAFO community */
-    #fafoCommunityFooter {
-      text-align: center;
-      color: #fff;
-      margin-top: 20px;
-    }
-  </style>
+        .game-card {
+            width: 300px;
+            height: 200px;
+            background-color: #282828;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .highlight-text {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #f39c12;
+        }
+    </style>
 </head>
-
 <body>
-  <!-- Banner with instructions -->
-  <div id="banner">
-    Press SPACE to shoot. Desktop browsers only (mobile support coming soon!)
-  </div>
+    <nav class="navbar">
+        <a href="#home">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="#leaderboard">Leaderboard</a>
+        <a href="#games">Games</a>
+    </nav>
 
-  <div id="mainWrapper">
-    <!-- =======================
-         1) LEFT SCROLL PANEL
-         ======================= -->
-    <div id="leftPanel">
-      <h2>World Savior</h2>
-      <p>
-        🌍 WORLD SAVIOR: THE LAST STAND AGAINST THE UNDEAD 🧟‍♂️🔥<br>
-        The world is on the brink of destruction. A relentless horde of zombies has
-        descended upon Earth, leaving chaos and ruin in their wake.
-      </p>
-      <p>
-        🏙️ Cities crumble.<br>
-        💔 Hope fades.<br>
-        ⚠️ Humanity teeters on the edge of extinction.
-      </p>
-      <p>
-        But in the darkest times, heroes rise. Enter <strong>The Supreme Commander</strong>—
-        a fearless warrior atop his unstoppable tank, blasting through waves of undead
-        with ruthless precision. His mission?
-      </p>
-      <!-- Start Game Button -->
-      <button id="startBtn">Start Game</button>
+    <section class="hero">
+        <h1>Welcome to FAFO Game</h1>
+      </section>
+
+    <div class="banner">
+        <h2>Games Under Development</h2>
     </div>
 
-    <!-- =======================
-         2) RIGHT 800×600 GAME
-         ======================= -->
-    <div id="gameContainer">
-      <div id="score">Score: 0</div>
-      <div id="healthBar">Health: 100</div>
-      <canvas id="gameCanvas" width="800" height="600"></canvas>
-    </div>
-  </div>
+    <section id="games" class="games-section">
+        <div class="game-card" onclick="location.href='world_savior.html'">
+            <img src="assets/world_savior.jpg" alt="Game 1">
+        </div>
+        <div class="game-card" onclick="location.href='buildthewall.html'">
+            <img src="assets/buildthewall/buildthewall.jpg" alt="Game 2">
+        </div>
+        <div class="game-card" onclick="location.href='orderanddominion.html'">
+            <img src="assets/orderanddominion/orderanddominion.jpg" alt="Game 3">
+        </div>
+        <div class="game-card" onclick="location.href='golf.html'">
+            <img src="assets/golf/golf.jpg" alt="Game 4">
+        </div>
+    </section>
 
-  <!-- Footer for the FAFO community -->
-  <div id="fafoCommunityFooter">
-    For the FAFO community
-  </div>
 
-  <script>
-    //***********************************************
-    // 1. Canvas & Basic Setup
-    //***********************************************
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const canvasWidth = canvas.width;   // 800
-    const canvasHeight = canvas.height; // 600
+    <div class="highlight-text">For the FAFO Community </div>
 
-    const startBtn = document.getElementById('startBtn');
-    const leftPanel = document.getElementById('leftPanel');
-    const scoreElement = document.getElementById('score');
-    const healthBar = document.getElementById('healthBar');
 
-    // Flag to know if we should run game logic or show cover image
-    let gameStarted = false;
 
-    // -------------------------
-    // COVER IMAGE (important!)
-    // -------------------------
-    // This image is drawn if the game has not yet started
-    const coverImage = new Image();
-    coverImage.src = 'assets/world_savior.jpg'; // Make sure this path is correct
 
-    //***********************************************
-    // 2. Hero & Basic Game Data
-    //***********************************************
-    const heroWidth = 100;
-    const heroHeight = 100;
-    let heroX = canvasWidth / 2 - heroWidth / 2;
-    let heroY = canvasHeight - heroHeight - 20;
-    const heroSpeed = 5;
-    let heroHealth = 100;
-
-    // Movement
-    let moveLeft = false;
-    let moveRight = false;
-    let moveUp = false;
-    let moveDown = false;
-
-    // Bullets
-    let bullets = [];
-    const bulletSpeed = 7;
-    const bulletWidth = 5;
-    const bulletHeight = 20;
-
-    // Zombies
-    const zombieImage = new Image();
-    zombieImage.src = "assets/zombie.jpg"; // Make sure path is correct
-    let zombies = [];
-    const zombieWidth = 40;
-    const zombieHeight = 40;
-    let zombieSpeed = 1.2;
-    let spawnInterval = 1000; // ms
-    let lastSpawnTime = 0;
-
-    // Score
-    let score = 0;
-
-    // Blood Particles
-    let bloodParticles = [];
-
-    // Friend
-    let friendActive = false;
-    const friendImage = new Image();
-    friendImage.src = "assets/friend.png";
-    let friend = {
-      x: 0,
-      y: -50,
-      width: 100,
-      height: 100,
-      speed: 2,
-      arrived: false
-    };
-    let reviving = false;
-    let reviveStartTime = 0;
-    const reviveDuration = 1000;
-
-    function getRandomFriendSpawnTime() {
-      return performance.now() + (10000 + Math.random() * 20000);
-    }
-    let nextFriendSpawnTime = getRandomFriendSpawnTime();
-
-    // Explosions
-    let explosions = [];
-
-    // Audio
-    const zombieBackgroundMusic = new Audio('assets/watery-graves-181198.mp3');
-    zombieBackgroundMusic.loop = true;
-    const friendMusic = new Audio('assets/superhero-theme-7963.mp3');
-    friendMusic.loop = true;
-    const zombieBiteSound = new Audio('assets/zombie-bite-96528.mp3');
-
-    // Hero image
-    const heroImage = new Image();
-    heroImage.src = 'assets/hero.png'; // Make sure path is correct
-
-    //***********************************************
-    // 3. Start Game Button
-    //***********************************************
-    startBtn.addEventListener('click', () => {
-      if (!gameStarted) {
-        // Switch the flag to start the game logic
-        gameStarted = true;
-
-        // Hide left panel & show HUD
-        leftPanel.style.display = 'none';
-        scoreElement.style.display = 'block';
-        healthBar.style.display = 'block';
-
-        // Start BG music
-        zombieBackgroundMusic.currentTime = 0;
-        zombieBackgroundMusic.play().catch(err => console.log(err));
-      }
-    });
-
-    //***********************************************
-    // 4. Input Listeners
-    //***********************************************
-    document.addEventListener('keydown', e => {
-      if (!gameStarted) return; // ignore input if game hasn't started
-      switch (e.key) {
-        case 'ArrowLeft':  moveLeft = true;  break;
-        case 'ArrowRight': moveRight = true; break;
-        case 'ArrowUp':    moveUp = true;    break;
-        case 'ArrowDown':  moveDown = true;  break;
-        case ' ':          shootBullet();    break;
-      }
-    });
-
-    document.addEventListener('keyup', e => {
-      if (!gameStarted) return; // ignore input if game hasn't started
-      switch (e.key) {
-        case 'ArrowLeft':  moveLeft = false;  break;
-        case 'ArrowRight': moveRight = false; break;
-        case 'ArrowUp':    moveUp = false;    break;
-        case 'ArrowDown':  moveDown = false;  break;
-      }
-    });
-
-    //***********************************************
-    // 5. Update Functions
-    //***********************************************
-    function update(deltaTime) {
-      // If the game hasn't started, skip updating
-      if (!gameStarted) return;
-
-      updateHeroPosition();
-      updateBullets();
-      spawnZombies();
-      updateZombies();
-      checkBulletZombieCollisions();
-      checkZombieHeroCollisions();
-      handleFriend();
-      handleFriendZombieCollisions();
-      updateBloodParticles();
-      updateExplosions();
-      updateReviveAnimation();
-      increaseDifficulty();
-    }
-
-    function updateHeroPosition() {
-      if (moveLeft && heroX > 0) heroX -= heroSpeed;
-      if (moveRight && heroX < canvasWidth - heroWidth) heroX += heroSpeed;
-      if (moveUp && heroY > 0) heroY -= heroSpeed;
-      if (moveDown && heroY < canvasHeight - heroHeight) heroY += heroSpeed;
-    }
-
-    function updateBullets() {
-      for (let i = 0; i < bullets.length; i++) {
-        bullets[i].y -= bulletSpeed;
-        if (bullets[i].y + bulletHeight < 0) {
-          bullets.splice(i, 1);
-          i--;
-        }
-      }
-    }
-
-    function spawnZombies() {
-      if (performance.now() - lastSpawnTime > spawnInterval) {
-        const xPos = Math.random() * (canvasWidth - zombieWidth);
-        zombies.push({ x: xPos, y: -zombieHeight });
-        lastSpawnTime = performance.now();
-      }
-    }
-
-    function updateZombies() {
-      zombies.forEach(z => {
-        const dx = heroX - z.x;
-        const dy = heroY - z.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist > 0) {
-          z.x += (dx/dist) * zombieSpeed;
-          z.y += (dy/dist) * zombieSpeed;
-        }
-      });
-    }
-
-    function increaseDifficulty() {
-      // Increase speed every 10 kills
-      if (score > 0 && score % 10 === 0) {
-        zombieSpeed = 1.2 + (Math.floor(score / 10) * 0.3);
-      }
-    }
-
-    //***********************************************
-    // 6. Collisions
-    //***********************************************
-    function checkBulletZombieCollisions() {
-      for (let i = 0; i < zombies.length; i++) {
-        for (let j = 0; j < bullets.length; j++) {
-          if (
-            bullets[j].x < zombies[i].x + zombieWidth &&
-            bullets[j].x + bulletWidth > zombies[i].x &&
-            bullets[j].y < zombies[i].y + zombieHeight &&
-            bullets[j].y + bulletHeight > zombies[i].y
-          ) {
-            bullets.splice(j, 1);
-            zombies.splice(i, 1);
-            score++;
-            updateScore();
-            i--;
-            break;
-          }
-        }
-      }
-    }
-
-    function checkZombieHeroCollisions() {
-      for (let i = 0; i < zombies.length; i++) {
-        if (
-          heroX < zombies[i].x + zombieWidth &&
-          heroX + heroWidth > zombies[i].x &&
-          heroY < zombies[i].y + zombieHeight &&
-          heroY + heroHeight > zombies[i].y
-        ) {
-          zombies.splice(i, 1);
-          i--;
-
-          zombieBiteSound.currentTime = 0;
-          zombieBiteSound.play().catch(()=>{});
-
-          heroHealth -= 10;
-          if (heroHealth < 0) heroHealth = 0;
-          updateHealth();
-
-          spawnBloodParticles(heroX + heroWidth/2, heroY + heroHeight/2);
-        }
-      }
-    }
-
-    //***********************************************
-    // 7. Blood Particles
-    //***********************************************
-    function spawnBloodParticles(originX, originY, count=10) {
-      for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 2 + 1;
-        const vx = Math.cos(angle) * speed;
-        const vy = Math.sin(angle) * speed;
-        bloodParticles.push({
-          x: originX,
-          y: originY,
-          vx,
-          vy,
-          alpha: 1
-        });
-      }
-    }
-
-    function updateBloodParticles() {
-      for (let i = 0; i < bloodParticles.length; i++) {
-        let p = bloodParticles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.02;
-        p.vy += 0.1; // gravity
-        if (p.alpha <= 0) {
-          bloodParticles.splice(i, 1);
-          i--;
-        }
-      }
-    }
-
-    //***********************************************
-    // 8. Friend Logic
-    //***********************************************
-    function handleFriend() {
-      if (!friendActive && performance.now() > nextFriendSpawnTime) {
-        // Stop zombie music
-        zombieBackgroundMusic.pause();
-        zombieBackgroundMusic.currentTime = 0;
-
-        // Start friend music
-        friendMusic.play().catch(()=>{});
-
-        friendActive = true;
-        friend.arrived = false;
-        friend.x = canvasWidth/2 - friend.width/2;
-        friend.y = -friend.height;
-      }
-
-      if (friendActive && !friend.arrived) {
-        const dx = (heroX + heroWidth/2) - (friend.x + friend.width/2);
-        const dy = (heroY + heroHeight/2) - (friend.y + friend.height/2);
-        const dist = Math.sqrt(dx*dx + dy*dy);
-
-        if (dist < 10) {
-          // Friend has arrived
-          friend.arrived = true;
-          heroHealth += 30;
-          if (heroHealth > 100) heroHealth = 100;
-          updateHealth();
-
-          reviving = true;
-          reviveStartTime = performance.now();
-        } else {
-          friend.x += (dx/dist) * friend.speed;
-          friend.y += (dy/dist) * friend.speed;
-        }
-      }
-    }
-
-    function handleFriendZombieCollisions() {
-      if (!friendActive || !friend.arrived) return;
-      for (let i = 0; i < zombies.length; i++) {
-        if (
-          friend.x < zombies[i].x + zombieWidth &&
-          friend.x + friend.width > zombies[i].x &&
-          friend.y < zombies[i].y + zombieHeight &&
-          friend.y + friend.height > zombies[i].y
-        ) {
-          // Explosion on zombie
-          spawnExplosion(
-            zombies[i].x + zombieWidth/2,
-            zombies[i].y + zombieHeight/2
-          );
-          zombies.splice(i, 1);
-          i--;
-        }
-      }
-    }
-
-    function updateReviveAnimation() {
-      if (friendActive && friend.arrived && !reviving) {
-        // End friend event
-        friendMusic.pause();
-        friendMusic.currentTime = 0;
-        zombieBackgroundMusic.play().catch(()=>{});
-        friendActive = false;
-        nextFriendSpawnTime = getRandomFriendSpawnTime();
-      }
-    }
-
-    //***********************************************
-    // 9. Explosions
-    //***********************************************
-    function spawnExplosion(x, y) {
-      explosions.push({
-        x: x,
-        y: y,
-        radius: 5,
-        alpha: 1
-      });
-    }
-
-    function updateExplosions() {
-      for (let i = 0; i < explosions.length; i++) {
-        let ex = explosions[i];
-        ex.radius += 1.5;
-        ex.alpha -= 0.03;
-        if (ex.alpha <= 0) {
-          explosions.splice(i, 1);
-          i--;
-        }
-      }
-    }
-
-    //***********************************************
-    // 10. Drawing
-    //***********************************************
-    function draw() {
-      // Always clear the canvas each frame
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-      // If the game hasn't started yet, draw cover image
-      if (!gameStarted) {
-        if (coverImage.complete) {
-          ctx.drawImage(coverImage, 0, 0, canvasWidth, canvasHeight);
-        } else {
-          // fallback if cover isn't loaded yet
-          ctx.fillStyle = 'black';
-          ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        }
-        return; // skip rest of drawing
-      }
-
-      // **********************
-      // Once game is started:
-      // **********************
-
-      // Hero
-      ctx.drawImage(heroImage, heroX, heroY, heroWidth, heroHeight);
-
-      // Bullets
-      ctx.fillStyle = 'yellow';
-      bullets.forEach(b => {
-        ctx.fillRect(b.x, b.y, bulletWidth, bulletHeight);
-      });
-
-      // Zombies
-      zombies.forEach(z => {
-        if (zombieImage.complete) {
-          ctx.drawImage(zombieImage, z.x, z.y, zombieWidth, zombieHeight);
-        } else {
-          // fallback if image not loaded
-          ctx.fillStyle = 'red';
-          ctx.fillRect(z.x, z.y, zombieWidth, zombieHeight);
-        }
-      });
-
-      // Blood Particles
-      bloodParticles.forEach(p => {
-        ctx.fillStyle = `rgba(255, 0, 0, ${p.alpha})`;
-        ctx.fillRect(p.x, p.y, 4, 4);
-      });
-
-      // Friend
-      if (friendActive) {
-        if (friendImage.complete) {
-          ctx.drawImage(friendImage, friend.x, friend.y, friend.width, friend.height);
-        } else {
-          // fallback
-          ctx.fillStyle = 'blue';
-          ctx.fillRect(friend.x, friend.y, friend.width, friend.height);
-        }
-      }
-
-      // Explosions
-      explosions.forEach(ex => {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(ex.x, ex.y, ex.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(255, 150, 0, ${ex.alpha})`;
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // Revive animation
-      if (reviving) {
-        const now = performance.now();
-        const elapsed = now - reviveStartTime;
-        if (elapsed < reviveDuration) {
-          const fraction = elapsed / reviveDuration;
-          const alpha = 1 - fraction;
-          ctx.save();
-          ctx.strokeStyle = `rgba(0, 255, 0, ${alpha})`;
-          ctx.lineWidth = 5;
-          ctx.beginPath();
-          ctx.arc(
-            heroX + heroWidth / 2,
-            heroY + heroHeight / 2,
-            heroWidth,
-            0,
-            2 * Math.PI
-          );
-          ctx.stroke();
-          ctx.restore();
-        } else {
-          reviving = false;
-        }
-      }
-    }
-
-    //***********************************************
-    // 11. Utility
-    //***********************************************
-    function shootBullet() {
-      bullets.push({
-        x: heroX + heroWidth / 2 - bulletWidth / 2,
-        y: heroY
-      });
-    }
-
-    function updateScore() {
-      scoreElement.textContent = `Score: ${score}`;
-    }
-
-    function updateHealth() {
-      healthBar.textContent = `Health: ${heroHealth}`;
-    }
-
-    //***********************************************
-    // 12. Game Loop
-    //***********************************************
-    let lastTime = 0;
-    function gameLoop(timestamp) {
-      const deltaTime = timestamp - lastTime;
-      lastTime = timestamp;
-
-      // Update logic (only if gameStarted)
-      update(deltaTime);
-
-      // Draw everything (cover or actual game)
-      draw();
-
-      // Check game over if the game is running
-      if (gameStarted && heroHealth <= 0) {
-        return gameOver();
-      }
-
-      // Keep looping
-      requestAnimationFrame(gameLoop);
-    }
-
-    function gameOver() {
-      // Stop music
-      zombieBackgroundMusic.pause();
-      friendMusic.pause();
-
-      alert(`Game Over! Your score: ${score}`);
-      window.location.reload();
-    }
-
-    //***********************************************
-    // 13. Start the Loop Immediately
-    //***********************************************
-    // We do NOT wait for the "Start Game" button
-    // to call gameLoop. This ensures the cover image
-    // is drawn before the user clicks "Start Game".
-    requestAnimationFrame(gameLoop);
-  </script>
 </body>
 </html>
