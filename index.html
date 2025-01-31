@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>World Savior Shooter</title>
+  <style>
+    /* Basic reset and full-page dark background */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000; /* black background */
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* A main wrapper that holds 2 columns:
+       - Left: Text Panel
+       - Right: 800×600 Game
+    */
+    #mainWrapper {
+      display: flex;
+      background: #000;
+      /* You can optionally set a max-width if desired */
+    }
+
+    /* Left Panel: scrollable text, start button */
+    #leftPanel {
+      width: 350px;         /* Adjust as desired */
+      height: 600px;        /* Match game canvas height */
+      background: #222;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;      /* scroll if text is long */
+    }
+    #leftPanel h2 {
+      margin-top: 0;
+      text-transform: uppercase;
+    }
+    #leftPanel p {
+      line-height: 1.4em;
+      margin-bottom: 1em;
+    }
+    #startBtn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+      background: #555;
+      border: none;
+      color: #fff;
+      border-radius: 5px;
+    }
+
+    /* Right Column: the game container (800×600) */
+    #gameContainer {
+      width: 800px;
+      height: 600px;
+      position: relative; /* so we can position scoreboard, etc. */
+      margin-left: 10px;  /* small gap between columns */
+      background: #111;
+      border: 2px solid #444;
+    }
+
+    /* The 800×600 canvas inside #gameContainer */
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #111;
+    }
+
+    /* Score & Health (hidden until game starts) */
+    #score, #healthBar {
+      display: none; /* hidden until the user presses Start Game */
+      position: absolute;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      user-select: none;
+      z-index: 10;
+    }
+    #score {
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+    }
+    #healthBar {
+      top: 40px;
+      left: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="mainWrapper">
+    <!-- =======================
+         1) LEFT SCROLL PANEL
+         ======================= -->
+    <div id="leftPanel">
+      <h2>World Savior</h2>
+      <p>
+        🌍 WORLD SAVIOR: THE LAST STAND AGAINST THE UNDEAD 🧟‍♂️🔥
+        <br/><br/>
+        The world is on the brink of destruction. A relentless horde of zombies has
+        descended upon Earth, leaving chaos and ruin in their wake.
+      </p>
+      <p>
+        🏙️ Cities crumble.<br/>
+        💔 Hope fades.<br/>
+        ⚠️ Humanity teeters on the edge of extinction.
+      </p>
+      <p>
+        But in the darkest times, heroes rise. Enter <strong>The Supreme Commander</strong>—
+        a fearless warrior atop his unstoppable tank, blasting through waves of undead
+        with ruthless precision. His mission?
+      </p>
+      <!-- Add as much text as you want here, it will scroll if it overflows -->
+
+      <!-- Start Game Button -->
+      <button id="startBtn">Start Game</button>
+    </div>
+
+    <!-- =======================
+         2) RIGHT 800×600 GAME
+         ======================= -->
+    <div id="gameContainer">
+      <div id="score">Score: 0</div>
+      <div id="healthBar">Health: 100</div>
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
+  </div>
+
+  <script>
+    //***********************************************
+    // 1. Canvas & Basic Setup
+    //***********************************************
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const canvasWidth = canvas.width;   // 800
+    const canvasHeight = canvas.height; // 600
+
+    const startBtn = document.getElementById('startBtn');
+    const leftPanel = document.getElementById('leftPanel');
+    const scoreElement = document.getElementById('score');
+    const healthBar = document.getElementById('healthBar');
+
+    let gameStarted = false;
+
+    // Hero
+    const heroWidth = 100;
+    const heroHeight = 100;
+    let heroX = canvasWidth / 2 - heroWidth / 2;
+    let heroY = canvasHeight - heroHeight - 20;
+    const heroSpeed = 5;
+    let heroHealth = 100;
+
+    // Movement
+    let moveLeft = false;
+    let moveRight = false;
+    let moveUp = false;
+    let moveDown = false;
+
+    // Bullets
+    let bullets = [];
+    const bulletSpeed = 7;
+    const bulletWidth = 5;
+    const bulletHeight = 20;
+
+    // Zombies (with your zombie.jpg image)
+    const zombieImage = new Image();
+    zombieImage.src = "assets/zombie.jpg"; // Keep your path
+    let zombies = [];
+    const zombieWidth = 40;
+    const zombieHeight = 40;
+    let zombieSpeed = 1.2;
+    let spawnInterval = 1000; // ms
+    let lastSpawnTime = 0;
+
+    // Score
+    let score = 0;
+
+    // Blood
+    let bloodParticles = [];
+
+    // Friend
+    let friendActive = false;
+    const friendImage = new Image();
+    friendImage.src = "assets/friend.png";
+    let friend = {
+      x: 0,
+      y: -50,
+      width: 100,
+      height: 100,
+      speed: 2,
+      arrived: false
+    };
+    let reviving = false;
+    let reviveStartTime = 0;
+    const reviveDuration = 1000;
+
+    function getRandomFriendSpawnTime() {
+      return performance.now() + (10000 + Math.random() * 20000);
+    }
+    let nextFriendSpawnTime = getRandomFriendSpawnTime();
+
+    // Explosions
+    let explosions = [];
+
+    // Audio
+    const zombieBackgroundMusic = new Audio('assets/watery-graves-181198.mp3');
+    zombieBackgroundMusic.loop = true;
+    const friendMusic = new Audio('assets/superhero-theme-7963.mp3');
+    friendMusic.loop = true;
+    const zombieBiteSound = new Audio('assets/zombie-bite-96528.mp3');
+
+    // Hero image
+    const heroImage = new Image();
+    heroImage.src = 'assets/hero.png'; // Keep your path
+
+    //***********************************************
+    // 2. Start Game Button
+    //***********************************************
+    startBtn.addEventListener('click', () => {
+      if (!gameStarted) {
+        // Hide the left panel
+        leftPanel.style.display = 'none';
+        // Show score & health
+        scoreElement.style.display = 'block';
+        healthBar.style.display = 'block';
+
+        gameStarted = true;
+        // Start BG music
+        zombieBackgroundMusic.currentTime = 0;
+        zombieBackgroundMusic.play().catch(err => console.log(err));
+
+        requestAnimationFrame(gameLoop);
+      }
+    });
+
+    //***********************************************
+    // 3. Input Listeners
+    //***********************************************
+    document.addEventListener('keydown', e => {
+      if (!gameStarted) return;
+      switch (e.key) {
+        case 'ArrowLeft':  moveLeft = true;  break;
+        case 'ArrowRight': moveRight = true; break;
+        case 'ArrowUp':    moveUp = true;    break;
+        case 'ArrowDown':  moveDown = true;  break;
+        case ' ':          shootBullet();    break;
+      }
+    });
+    document.addEventListener('keyup', e => {
+      if (!gameStarted) return;
+      switch (e.key) {
+        case 'ArrowLeft':  moveLeft = false;  break;
+        case 'ArrowRight': moveRight = false; break;
+        case 'ArrowUp':    moveUp = false;    break;
+        case 'ArrowDown':  moveDown = false;  break;
+      }
+    });
+
+    //***********************************************
+    // 4. Update Functions
+    //***********************************************
+    function update(deltaTime) {
+      if (!gameStarted) return;
+
+      updateHeroPosition();
+      updateBullets();
+      spawnZombies();
+      updateZombies();
+      checkBulletZombieCollisions();
+      checkZombieHeroCollisions();
+      handleFriend();
+      handleFriendZombieCollisions();
+      updateBloodParticles();
+      updateExplosions();
+      updateReviveAnimation();
+      increaseDifficulty();
+    }
+
+    function updateHeroPosition() {
+      if (moveLeft && heroX > 0) heroX -= heroSpeed;
+      if (moveRight && heroX < canvasWidth - heroWidth) heroX += heroSpeed;
+      if (moveUp && heroY > 0) heroY -= heroSpeed;
+      if (moveDown && heroY < canvasHeight - heroHeight) heroY += heroSpeed;
+    }
+
+    function updateBullets() {
+      for (let i = 0; i < bullets.length; i++) {
+        bullets[i].y -= bulletSpeed;
+        if (bullets[i].y + bulletHeight < 0) {
+          bullets.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function spawnZombies() {
+      if (performance.now() - lastSpawnTime > spawnInterval) {
+        const xPos = Math.random() * (canvasWidth - zombieWidth);
+        zombies.push({ x: xPos, y: -zombieHeight });
+        lastSpawnTime = performance.now();
+      }
+    }
+
+    function updateZombies() {
+      zombies.forEach(z => {
+        const dx = heroX - z.x;
+        const dy = heroY - z.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > 0) {
+          z.x += (dx/dist) * zombieSpeed;
+          z.y += (dy/dist) * zombieSpeed;
+        }
+      });
+    }
+
+    function increaseDifficulty() {
+      if (score > 0 && score % 10 === 0) {
+        zombieSpeed = 1.2 + (Math.floor(score / 10) * 0.3);
+      }
+    }
+
+    //***********************************************
+    // 5. Collisions
+    //***********************************************
+    function checkBulletZombieCollisions() {
+      for (let i = 0; i < zombies.length; i++) {
+        for (let j = 0; j < bullets.length; j++) {
+          if (
+            bullets[j].x < zombies[i].x + zombieWidth &&
+            bullets[j].x + bulletWidth > zombies[i].x &&
+            bullets[j].y < zombies[i].y + zombieHeight &&
+            bullets[j].y + bulletHeight > zombies[i].y
+          ) {
+            bullets.splice(j, 1);
+            zombies.splice(i, 1);
+            score++;
+            updateScore();
+            i--;
+            break;
+          }
+        }
+      }
+    }
+
+    function checkZombieHeroCollisions() {
+      for (let i = 0; i < zombies.length; i++) {
+        if (
+          heroX < zombies[i].x + zombieWidth &&
+          heroX + heroWidth > zombies[i].x &&
+          heroY < zombies[i].y + zombieHeight &&
+          heroY + heroHeight > zombies[i].y
+        ) {
+          zombies.splice(i, 1);
+          i--;
+
+          zombieBiteSound.currentTime = 0;
+          zombieBiteSound.play().catch(()=>{});
+
+          heroHealth -= 10;
+          if (heroHealth < 0) heroHealth = 0;
+          updateHealth();
+
+          spawnBloodParticles(heroX + heroWidth/2, heroY + heroHeight/2);
+        }
+      }
+    }
+
+    //***********************************************
+    // 6. Blood Particles
+    //***********************************************
+    function spawnBloodParticles(originX, originY, count=10) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 2 + 1;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        bloodParticles.push({
+          x: originX,
+          y: originY,
+          vx,
+          vy,
+          alpha: 1
+        });
+      }
+    }
+
+    function updateBloodParticles() {
+      for (let i = 0; i < bloodParticles.length; i++) {
+        let p = bloodParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.02;
+        p.vy += 0.1; // gravity
+        if (p.alpha <= 0) {
+          bloodParticles.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    //***********************************************
+    // 7. Friend Logic
+    //***********************************************
+    function handleFriend() {
+      const now = performance.now();
+      if (!friendActive && now > nextFriendSpawnTime) {
+        // Stop background music
+        zombieBackgroundMusic.pause();
+        zombieBackgroundMusic.currentTime = 0;
+        // Start friend music
+        friendMusic.play().catch(()=>{});
+
+        friendActive = true;
+        friend.arrived = false;
+        friend.x = canvasWidth/2 - friend.width/2;
+        friend.y = -friend.height;
+      }
+
+      if (friendActive && !friend.arrived) {
+        const dx = (heroX + heroWidth/2) - (friend.x + friend.width/2);
+        const dy = (heroY + heroHeight/2) - (friend.y + friend.height/2);
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        if (dist < 10) {
+          friend.arrived = true;
+          heroHealth += 30;
+          if (heroHealth > 100) heroHealth = 100;
+          updateHealth();
+
+          reviving = true;
+          reviveStartTime = performance.now();
+        } else {
+          friend.x += (dx/dist) * friend.speed;
+          friend.y += (dy/dist) * friend.speed;
+        }
+      }
+    }
+
+    function handleFriendZombieCollisions() {
+      if (!friendActive || !friend.arrived) return;
+      for (let i = 0; i < zombies.length; i++) {
+        if (
+          friend.x < zombies[i].x + zombieWidth &&
+          friend.x + friend.width > zombies[i].x &&
+          friend.y < zombies[i].y + zombieHeight &&
+          friend.y + friend.height > zombies[i].y
+        ) {
+          spawnExplosion(zombies[i].x + zombieWidth/2, zombies[i].y + zombieHeight/2);
+          zombies.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function updateReviveAnimation() {
+      if (friendActive && friend.arrived && !reviving) {
+        friendMusic.pause();
+        friendMusic.currentTime = 0;
+        zombieBackgroundMusic.play().catch(()=>{});
+        friendActive = false;
+        nextFriendSpawnTime = getRandomFriendSpawnTime();
+      }
+    }
+
+    //***********************************************
+    // 8. Explosions
+    //***********************************************
+    function spawnExplosion(x, y) {
+      explosions.push({
+        x: x,
+        y: y,
+        radius: 5,
+        alpha: 1
+      });
+    }
+
+    function updateExplosions() {
+      for (let i = 0; i < explosions.length; i++) {
+        let ex = explosions[i];
+        ex.radius += 1.5;
+        ex.alpha -= 0.03;
+        if (ex.alpha <= 0) {
+          explosions.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    //***********************************************
+    // 9. Drawing
+    //***********************************************
+    function draw() {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      if (!gameStarted) {
+        // If game not started, do nothing (canvas stays blank)
+        return;
+      }
+
+      // Draw hero
+      ctx.drawImage(heroImage, heroX, heroY, heroWidth, heroHeight);
+
+      // Bullets
+      ctx.fillStyle = 'yellow';
+      bullets.forEach(b => {
+        ctx.fillRect(b.x, b.y, bulletWidth, bulletHeight);
+      });
+
+      // Zombies (use your zombie.jpg image)
+      zombies.forEach(z => {
+        if (zombieImage.complete) {
+          ctx.drawImage(zombieImage, z.x, z.y, zombieWidth, zombieHeight);
+        } else {
+          // fallback if image not loaded
+          ctx.fillStyle = 'red';
+          ctx.fillRect(z.x, z.y, zombieWidth, zombieHeight);
+        }
+      });
+
+      // Blood
+      bloodParticles.forEach(p => {
+        ctx.fillStyle = `rgba(255, 0, 0, ${p.alpha})`;
+        ctx.fillRect(p.x, p.y, 4, 4);
+      });
+
+      // Friend
+      if (friendActive) {
+        if (friendImage.complete) {
+          ctx.drawImage(friendImage, friend.x, friend.y, friend.width, friend.height);
+        } else {
+          // fallback
+          ctx.fillStyle = 'blue';
+          ctx.fillRect(friend.x, friend.y, friend.width, friend.height);
+        }
+      }
+
+      // Explosions
+      explosions.forEach(ex => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ex.x, ex.y, ex.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255, 150, 0, ${ex.alpha})`;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Revive animation
+      if (reviving) {
+        const now = performance.now();
+        const elapsed = now - reviveStartTime;
+        if (elapsed < reviveDuration) {
+          const fraction = elapsed / reviveDuration;
+          const alpha = 1 - fraction;
+          ctx.save();
+          ctx.strokeStyle = `rgba(0, 255, 0, ${alpha})`;
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.arc(
+            heroX + heroWidth / 2,
+            heroY + heroHeight / 2,
+            heroWidth,
+            0,
+            2 * Math.PI
+          );
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          reviving = false;
+        }
+      }
+    }
+
+    //***********************************************
+    // 10. Utility
+    //***********************************************
+    function shootBullet() {
+      bullets.push({
+        x: heroX + heroWidth / 2 - bulletWidth / 2,
+        y: heroY
+      });
+    }
+
+    function updateScore() {
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function updateHealth() {
+      healthBar.textContent = `Health: ${heroHealth}`;
+    }
+
+    //***********************************************
+    // 11. Game Loop
+    //***********************************************
+    let lastTime = 0;
+    function gameLoop(timestamp) {
+      const deltaTime = timestamp - lastTime;
+      lastTime = timestamp;
+
+      update(deltaTime);
+      draw();
+
+      // Check game over
+      if (heroHealth <= 0) {
+        return gameOver();
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameOver() {
+      // Stop music
+      zombieBackgroundMusic.pause();
+      friendMusic.pause();
+
+      alert(`Game Over! Your score: ${score}`);
+      window.location.reload();
+    }
+    // We do NOT call gameLoop() until user presses Start Game
+  </script>
+</body>
+</html>
