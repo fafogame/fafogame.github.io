@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FAFOGAME SPACE RACER</title>
+  <title>Phaser Spacecraft Boarding & Dodge Game</title>
   <style>
     html, body {
       margin: 0;
@@ -48,6 +48,8 @@
         this.load.image('missile', 'assets/spacerace/missile.png');
         this.load.image('person1', 'assets/spacerace/person1.png');
         this.load.image('person2', 'assets/spacerace/person2.png');
+        // Load the fire asset for the bullet.
+        this.load.image('fire', 'assets/spacerace/fire.png');
 
         // Load sounds.
         this.load.audio('bgMusic', 'assets/spacerace/bgMusic.mp3');
@@ -257,66 +259,77 @@
           repeat: -1
         });
       }
+
+
       fireBullet() {
-        let bullet = this.add.rectangle(this.playerContainer.x, this.playerContainer.y - 30, 5, 15, 0xffffff);
-        this.physics.add.existing(bullet);
-        bullet.body.setVelocityY(-400);
-        bullet.body.setAllowGravity(false);
-        this.bullets.add(bullet);
-      }
-      
-      handleAsteroidCollision(playerContainer, asteroid) {
-  asteroid.destroy();
-  this.health -= 10;  // Drop health by 10
-  this.healthText.setText('Health: ' + this.health);
-  this.sound.play('asteroidHit');
-  this.tweens.add({
-    targets: playerContainer,
-    angle: { from: -5, to: 5 },
-    duration: 100,
-    yoyo: true,
-    repeat: 3,
-    onComplete: () => { playerContainer.angle = 0; }
-  });
-  if (this.health <= 0) {
-    // Stop background music before game over.
-    if (this.bgMusic) {
-      this.bgMusic.stop();
-    }
-    this.physics.pause();
-    this.time.delayedCall(1000, () => {
-      this.scene.start('GameOver', { score: this.score });
-    });
-  }
+  // Capture the current world coordinates from the player container.
+  let bulletX = this.playerContainer.x;
+  let bulletY = this.playerContainer.y - 30;
+  
+  // Create a physics-enabled image using the 'fire' asset at those coordinates.
+  let bullet = this.physics.add.image(bulletX, bulletY, 'fire');
+  bullet.setOrigin(0.5, 0.5);
+  bullet.setScale(0.4);
+  
+  // Disable gravity so it moves straight upward.
+  bullet.body.setAllowGravity(false);
+  
+  // Set a high upward velocity.
+  bullet.setVelocityY(-2000);
+  
+  // Add the bullet to the bullets group.
+  this.bullets.add(bullet);
 }
 
-    handleMissileCollision(playerContainer, missile) {
-      missile.destroy();
-      this.health -= 20;  // Drop health by 20
-      this.healthText.setText('Health: ' + this.health);
-      this.sound.play('missileHit');
-      this.tweens.add({
-        targets: playerContainer,
-        angle: { from: -5, to: 5 },
-        duration: 100,
-        yoyo: true,
-        repeat: 3,
-        onComplete: () => { playerContainer.angle = 0; }
-      });
-      if (this.health <= 0) {
-        if (this.bgMusic) {
-          this.bgMusic.stop();
-        }
-        this.physics.pause();
-        this.time.delayedCall(1000, () => {
-          this.scene.start('GameOver', { score: this.score });
-        });
-      }
-    }
 
-      
-      
-      
+
+
+      handleAsteroidCollision(playerContainer, asteroid) {
+        asteroid.destroy();
+        this.health -= 10;  // Drop health by 10
+        this.healthText.setText('Health: ' + this.health);
+        this.sound.play('asteroidHit');
+        this.tweens.add({
+          targets: playerContainer,
+          angle: { from: -5, to: 5 },
+          duration: 100,
+          yoyo: true,
+          repeat: 3,
+          onComplete: () => { playerContainer.angle = 0; }
+        });
+        if (this.health <= 0) {
+          if (this.bgMusic) {
+            this.bgMusic.stop();
+          }
+          this.physics.pause();
+          this.time.delayedCall(1000, () => {
+            this.scene.start('GameOver', { score: this.score });
+          });
+        }
+      }
+      handleMissileCollision(playerContainer, missile) {
+        missile.destroy();
+        this.health -= 20;  // Drop health by 20
+        this.healthText.setText('Health: ' + this.health);
+        this.sound.play('missileHit');
+        this.tweens.add({
+          targets: playerContainer,
+          angle: { from: -5, to: 5 },
+          duration: 100,
+          yoyo: true,
+          repeat: 3,
+          onComplete: () => { playerContainer.angle = 0; }
+        });
+        if (this.health <= 0) {
+          if (this.bgMusic) {
+            this.bgMusic.stop();
+          }
+          this.physics.pause();
+          this.time.delayedCall(1000, () => {
+            this.scene.start('GameOver', { score: this.score });
+          });
+        }
+      }
       handleBulletAsteroidCollision(bullet, asteroid) {
         bullet.destroy();
         asteroid.destroy();
