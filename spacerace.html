@@ -42,17 +42,17 @@
       }
       preload() {
         // Load images.
-        this.load.image('background', 'assets/background.png');
-        this.load.image('spaceCraft', 'assets/spaceCraft.png');
-        this.load.image('asteroid', 'assets/asteroid.png');
-        this.load.image('missile', 'assets/missile.png');
-        this.load.image('person1', 'assets/person1.png');
-        this.load.image('person2', 'assets/person2.png');
+        this.load.image('background', 'assets/spacerace/background.png');
+        this.load.image('spaceCraft', 'assets/spacerace/spaceCraft.png');
+        this.load.image('asteroid', 'assets/spacerace/asteroid.png');
+        this.load.image('missile', 'assets/spacerace/missile.png');
+        this.load.image('person1', 'assets/spacerace/person1.png');
+        this.load.image('person2', 'assets/spacerace/person2.png');
 
         // Load sounds.
-        this.load.audio('bgMusic', 'assets/bgMusic.mp3');
-        this.load.audio('asteroidHit', 'assets/asteroidHit.mp3');
-        this.load.audio('missileHit', 'assets/missileHit.mp3');
+        this.load.audio('bgMusic', 'assets/spacerace/bgMusic.mp3');
+        this.load.audio('asteroidHit', 'assets/spacerace/asteroidHit.mp3');
+        this.load.audio('missileHit', 'assets/spacerace/missileHit.mp3');
       }
       create() {
         this.scene.start('CharacterSelect');
